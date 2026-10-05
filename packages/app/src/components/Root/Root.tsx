@@ -19,17 +19,9 @@ import {
   useSidebarOpenState,
 } from '@backstage/core-components';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
 import { MyGroupsSidebarItem } from '@backstage/plugin-org';
 import { usePermission } from '@backstage/plugin-permission-react';
-import {
-  searchTranslationRef,
-  SidebarSearchModal,
-} from '@backstage/plugin-search';
-import {
-  Settings as SidebarSettings,
-  userSettingsTranslationRef,
-} from '@backstage/plugin-user-settings';
+import { SidebarSearchModal } from '@backstage/plugin-search';
 
 import { policyEntityCreatePermission } from '@backstage-community/plugin-rbac-common';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -47,8 +39,6 @@ import DynamicRootContext, {
   ResolvedMenuItem,
 } from '@red-hat-developer-hub/plugin-utils';
 
-import { useLanguagePreference } from '../../hooks/useLanguagePreference';
-import { useTranslation } from '../../hooks/useTranslation';
 import { ApplicationHeaders } from './ApplicationHeaders';
 import { CustomSidebarItem } from './CustomSidebarItem';
 import { MenuIcon } from './MenuIcon';
@@ -268,7 +258,8 @@ const getMenuItem = (
     paddingLeft: isNestedMenuItem ? '2rem' : '',
   };
   const translatedText = getMenuText(menuItem);
-  const pluralTranslatedText = getMenuText(menuItem, 2);
+  const pluralTranslatedText =
+    menuItem.name === 'default.my-group' ? 'Meus grupos' : translatedText;
   return menuItem.name === 'default.my-group' ? (
     <Box key={menuItem.name} sx={{ '& a': menuItemStyle }}>
       <MyGroupsSidebarItem
@@ -320,9 +311,6 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
   const aboveMainContentHeaderRef = useRef<HTMLDivElement>(null);
   const [aboveMainContentHeaderHeight, setAboveMainContentHeaderHeight] =
     useState(0);
-
-  const { t: searchT } = useTranslationRef(searchTranslationRef);
-  const { t: userSettingsT } = useTranslationRef(userSettingsTranslationRef);
 
   useLayoutEffect(() => {
     if (!aboveSidebarHeaderRef.current) return () => {};
@@ -376,14 +364,23 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
       permission: policyEntityCreatePermission,
       resourceRef: undefined,
     });
-  useLanguagePreference();
-  const { t } = useTranslation();
-
-  const getMenuText = (menuItem: ResolvedMenuItem, count?: number) => {
-    if (menuItem.titleKey) {
-      return t(menuItem.titleKey as any, { count: count ?? 1 } as any);
+  const translatedMenuTitles: Record<string, string> = {
+    'menuItem.catalog': 'Catálogo',
+    'menuItem.selfService': 'Autoatendimento',
+    'menuItem.administration': 'Administração',
+    'sidebar.menu': 'Menu',
+    'sidebar.home': 'Início',
+    'sidebar.homeLogo': 'Logo da página inicial',
+    'app.search.title': 'Pesquisar',
+  };
+  const getMenuText = (menuItem: ResolvedMenuItem, count = 1) => {
+    if (menuItem.name === 'default.my-group') {
+      return count === 1 ? 'Meu grupo' : 'Meus grupos';
     }
-    return menuItem.title;
+    return (
+      (menuItem.titleKey && translatedMenuTitles[menuItem.titleKey]) ||
+      menuItem.title
+    );
   };
 
   const handleClick = (itemName: string) => {
@@ -563,7 +560,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
                 {showSearch ? (
                   <>
                     <SidebarGroup
-                      label={searchT('sidebarSearchModal.title')}
+                      label="Pesquisar"
                       icon={<SearchIcon />}
                       to="/search"
                     >
@@ -577,7 +574,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
               </Box>
 
               <SidebarScrollableContent>
-                <SidebarGroup label={t('sidebar.menu')} icon={<MuiMenuIcon />}>
+                <SidebarGroup label="Menu" icon={<MuiMenuIcon />}>
                   {/* Global nav, not org-specific */}
                   {renderMenuItems(true, false)}
                   {/* End global nav */}
@@ -589,8 +586,9 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
                         const props = menuItem.config?.props || {};
                         const resolvedProps = { ...props };
                         if ('textKey' in props && props.textKey) {
-                          const translated = t(props.textKey as any, {});
-                          if (translated !== props.textKey) {
+                          const translated =
+                            translatedMenuTitles[props.textKey as string];
+                          if (translated) {
                             resolvedProps.text = translated;
                           }
                         }
@@ -613,7 +611,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
                 {showAdministration && (
                   <>
                     <SidebarDivider />
-                    <SidebarGroup label={t('menuItem.administration')}>
+                    <SidebarGroup label="Administração">
                       {renderMenuItems(true, true)}
                     </SidebarGroup>
                   </>
@@ -622,12 +620,10 @@ export const Root = ({ children }: PropsWithChildren<{}>) => {
                   <>
                     <SidebarDivider />
                     <SidebarGroup
-                      label={userSettingsT('sidebarTitle')}
+                      label="Configurações"
                       to="/settings"
                       icon={<AccountCircleOutlinedIcon />}
-                    >
-                      <SidebarSettings icon={AccountCircleOutlinedIcon} />
-                    </SidebarGroup>
+                    />
                   </>
                 )}
               </SidebarStickyBottom>

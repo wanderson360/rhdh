@@ -8,10 +8,8 @@ import { EntityLayout, EntitySwitch } from '@backstage/plugin-catalog';
 import Box from '@mui/material/Box';
 import { DynamicRootConfig } from '@red-hat-developer-hub/plugin-utils';
 
-import { useTranslation } from '../../../hooks/useTranslation';
 import getDynamicRootConfig from '../../../utils/dynamicUI/getDynamicRootConfig';
 import getMountPointData from '../../../utils/dynamicUI/getMountPointData';
-import { getTranslatedTextWithFallback } from '../../../utils/translations';
 import Grid from '../Grid';
 
 const TranslatedTab = forwardRef<
@@ -24,13 +22,11 @@ const TranslatedTab = forwardRef<
     [key: string]: any;
   }
 >((props, ref) => {
-  const { title, titleKey, path, children, ...otherProps } = props;
-  const { t } = useTranslation();
-
-  const translatedText = getTranslatedTextWithFallback(t, titleKey, title);
+  const { title, path, children, ...otherProps } = props;
+  delete otherProps.titleKey;
   return (
     <Link ref={ref} to={path} {...otherProps}>
-      {translatedText}
+      {title}
     </Link>
   );
 });
@@ -57,7 +53,6 @@ export type DynamicEntityTabProps = {
 export const dynamicEntityTab = ({
   path,
   title,
-  titleKey,
   mountPoint,
   children,
   if: condition,
@@ -69,7 +64,6 @@ export const dynamicEntityTab = ({
     tabProps={{
       component: TranslatedTab,
       title: title,
-      titleKey: titleKey,
       path: path,
     }}
     if={entity =>

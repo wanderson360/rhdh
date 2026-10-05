@@ -9,7 +9,6 @@ import { makeStyles } from 'tss-react/mui';
 
 import { ErrorReport } from '../../common';
 import { useLearningPathData } from '../../hooks/useLearningPathData';
-import { useTranslation } from '../../hooks/useTranslation';
 import { LearningPathLink } from '../../types/types';
 
 const useStyles = makeStyles()({
@@ -27,39 +26,38 @@ const useStyles = makeStyles()({
 });
 
 const learningPathLengthInfo = (path: LearningPathLink) => {
-  const hoursText = path.hours === 1 ? 'hour' : 'hours';
-  const minutesText = path.minutes === 1 ? 'minute' : 'minutes';
+  const hoursText = path.hours === 1 ? 'hora' : 'horas';
+  const minutesText = path.minutes === 1 ? 'minuto' : 'minutos';
 
   const hours = path.hours ? `${path.hours} ${hoursText}` : '';
   const minutes = path.minutes ? `${path.minutes} ${minutesText}` : '';
 
-  return `${hours} ${minutes} | ${path.paths} learning paths`;
+  const duration = [hours, minutes].filter(Boolean).join(' ');
+  return `${duration ? `${duration} | ` : ''}${path.paths ?? 0} trilhas de aprendizagem`;
 };
 
 const LearningPathCards = () => {
   const { classes } = useStyles();
-  const { t } = useTranslation();
-
   const { data, error, isLoading } = useLearningPathData();
 
   if (isLoading) {
     return <CircularProgress />;
   }
 
-  if (!data) {
+  if (error) {
     return (
       <ErrorReport
-        title={t('app.learningPaths.error.title')}
-        errorText={t('app.learningPaths.error.unknownError')}
+        title="Não foi possível carregar as trilhas de aprendizagem"
+        errorText={error.toString()}
       />
     );
   }
 
-  if (!isLoading && !data && error) {
+  if (!data) {
     return (
       <ErrorReport
-        title={t('app.learningPaths.error.title')}
-        errorText={error.toString()}
+        title="Não foi possível carregar as trilhas de aprendizagem"
+        errorText="Ocorreu um erro desconhecido."
       />
     );
   }
@@ -84,12 +82,10 @@ const LearningPathCards = () => {
 };
 
 export const LearningPaths = () => {
-  const { t } = useTranslation();
-
   return (
     <SearchContextProvider>
       <Page themeId="learningpaths">
-        <Header title={t('app.learningPaths.title')} />
+        <Header title="Trilhas de aprendizagem" />
         <Content>
           <Grid container justifyContent="center">
             <Grid item>

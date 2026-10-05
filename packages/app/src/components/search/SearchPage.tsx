@@ -12,7 +12,6 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from 'tss-react/mui';
 
-import { useTranslation } from '../../hooks/useTranslation';
 import getMountPointData from '../../utils/dynamicUI/getMountPointData';
 import { MenuIcon } from '../Root/MenuIcon';
 
@@ -36,11 +35,10 @@ const useStyles = makeStyles()(theme => ({
 
 export const SearchPage = () => {
   const { classes } = useStyles();
-  const { t } = useTranslation();
 
   return (
     <Page themeId="home">
-      <Header title={t('app.search.title')} />
+      <Header title="Pesquisar" />
       <Content>
         <Grid container direction="row">
           <Grid item xs={12}>
@@ -56,12 +54,12 @@ export const SearchPage = () => {
           </Grid>
           <Grid item xs={3}>
             <SearchType.Accordion
-              name={t('app.search.resultType')}
+              name="Tipo de resultado"
               defaultValue="software-catalog"
               types={[
                 {
                   value: 'software-catalog',
-                  name: t('app.search.softwareCatalog'),
+                  name: 'Catálogo de software',
                   icon: <CatalogIcon />,
                 },
                 ...getMountPointData<
@@ -84,20 +82,14 @@ export const SearchPage = () => {
             />
             <Paper className={classes.filters}>
               <SearchFilter.Select
-                label={t('app.search.filters.kind')}
+                label="Tipo"
                 name="kind"
-                values={[
-                  t('app.search.filters.component'),
-                  t('app.search.filters.template'),
-                ]}
+                values={['Componente', 'Modelo']}
               />
               <SearchFilter.Checkbox
-                label={t('app.search.filters.lifecycle')}
+                label="Ciclo de vida"
                 name="lifecycle"
-                values={[
-                  t('app.search.filters.experimental'),
-                  t('app.search.filters.production'),
-                ]}
+                values={['Experimental', 'Produção']}
               />
               {...getMountPointData<React.ComponentType>(
                 'search.page.filters',

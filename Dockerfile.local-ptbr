@@ -1,0 +1,3 @@
+FROM quay.io/rhdh-community/rhdh:1.10.3
+
+COPY --chown=1001:0 . /opt/app-root/src/packages/app/dist/

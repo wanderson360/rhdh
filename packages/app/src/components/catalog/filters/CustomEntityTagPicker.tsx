@@ -1,11 +1,7 @@
-import React from 'react';
+import type { FC } from 'react';
 
 import { Entity } from '@backstage/catalog-model';
-import { useTranslationRef } from '@backstage/core-plugin-api/alpha';
-import {
-  catalogReactTranslationRef,
-  EntityAutocompletePicker,
-} from '@backstage/plugin-catalog-react';
+import { EntityAutocompletePicker } from '@backstage/plugin-catalog-react';
 
 // Custom EntityTagFilter with OR logic instead of AND logic
 export class CustomEntityTagFilter {
@@ -49,15 +45,13 @@ interface CustomEntityTagPickerProps {
  * Custom Entity Tag Picker with OR logic for multiple tag selections
  * Uses the same EntityAutocompletePicker as the original but with custom filter logic
  */
-const CustomEntityTagPicker: React.FC<CustomEntityTagPickerProps> = ({
+const CustomEntityTagPicker: FC<CustomEntityTagPickerProps> = ({
   showCounts = false,
   initialFilter = [],
 }) => {
-  const { t } = useTranslationRef(catalogReactTranslationRef);
-
   return (
     <EntityAutocompletePicker
-      label={t('entityTagPicker.title')}
+      label="Etiquetas"
       name="tags"
       path="metadata.tags"
       Filter={CustomEntityTagFilter}

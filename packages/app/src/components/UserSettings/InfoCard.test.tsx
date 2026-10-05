@@ -21,8 +21,8 @@ describe('InfoCard', () => {
         <InfoCard />
       </TestApiProvider>,
     );
-    expect(renderResult.getByText(/RHDH Version/)).toBeInTheDocument();
-    expect(renderResult.getByText(/Backstage Version/)).toBeInTheDocument();
+    expect(renderResult.getByText(/Versão do RHDH/)).toBeInTheDocument();
+    expect(renderResult.getByText(/Versão do Backstage/)).toBeInTheDocument();
   });
 
   it('should hide the build time by default and show it on click', async () => {
@@ -36,9 +36,9 @@ describe('InfoCard', () => {
         <InfoCard />
       </TestApiProvider>,
     );
-    expect(renderResult.queryByText(/Last Commit/)).toBeNull();
-    await userEvent.click(renderResult.getByText(/RHDH Version/));
-    expect(renderResult.getByText(/Last Commit/)).toBeInTheDocument();
+    expect(renderResult.queryByText(/Último commit/)).toBeNull();
+    await userEvent.click(renderResult.getByText(/Versão do RHDH/));
+    expect(renderResult.getByText(/Último commit/)).toBeInTheDocument();
   });
 
   it('should render the customized values when build info is configured', async () => {
@@ -93,8 +93,8 @@ describe('InfoCard', () => {
     ).toBeInTheDocument();
     await userEvent.click(renderResult.getByText(/TechDocs builder/));
     expect(renderResult.getByText(/RBAC/)).toBeInTheDocument();
-    expect(renderResult.queryByText(/Last Commit/)).toBeInTheDocument();
-    expect(renderResult.queryByText(/RHDH Version/)).toBeInTheDocument();
+    expect(renderResult.queryByText(/Último commit/)).toBeInTheDocument();
+    expect(renderResult.queryByText(/Versão do RHDH/)).toBeInTheDocument();
   });
 
   it('should display only the customized values when build info is configured with full set to true, without appending RHDH versions', async () => {
@@ -122,7 +122,7 @@ describe('InfoCard', () => {
     ).toBeInTheDocument();
     await userEvent.click(renderResult.getByText(/TechDocs builder/));
     expect(renderResult.getByText(/RBAC/)).toBeInTheDocument();
-    expect(renderResult.queryByText(/Last Commit/)).not.toBeInTheDocument();
+    expect(renderResult.queryByText(/Último commit/)).not.toBeInTheDocument();
   });
 
   it('should fallback to default json if the customized card value is empty', async () => {
@@ -142,7 +142,7 @@ describe('InfoCard', () => {
     expect(
       renderResult.queryByText(/TechDocs builder/),
     ).not.toBeInTheDocument();
-    expect(renderResult.getByText(/RHDH Version/)).toBeInTheDocument();
-    expect(renderResult.getByText(/Backstage Version/)).toBeInTheDocument();
+    expect(renderResult.getByText(/Versão do RHDH/)).toBeInTheDocument();
+    expect(renderResult.getByText(/Versão do Backstage/)).toBeInTheDocument();
   });
 });

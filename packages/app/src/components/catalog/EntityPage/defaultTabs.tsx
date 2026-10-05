@@ -17,78 +17,63 @@ export const defaultTabs: Record<
   Omit<DynamicEntityTabProps, 'if' | 'children' | 'path'>
 > = {
   '/': {
-    title: 'Overview',
-    titleKey: 'catalog.entityPage.overview.title',
+    title: 'Visão geral',
     mountPoint: 'entity.page.overview',
   },
   '/topology': {
-    title: 'Topology',
-    titleKey: 'catalog.entityPage.topology.title',
+    title: 'Topologia',
     mountPoint: 'entity.page.topology',
   },
   '/issues': {
-    title: 'Issues',
-    titleKey: 'catalog.entityPage.issues.title',
+    title: 'Problemas',
     mountPoint: 'entity.page.issues',
   },
   '/pr': {
-    title: 'Pull/Merge Requests',
-    titleKey: 'catalog.entityPage.pullRequests.title',
+    title: 'Solicitações de pull/merge',
     mountPoint: 'entity.page.pull-requests',
   },
   '/ci': {
-    title: 'CI',
-    titleKey: 'catalog.entityPage.ci.title',
+    title: 'Integração contínua',
     mountPoint: 'entity.page.ci',
   },
   '/cd': {
-    title: 'CD',
-    titleKey: 'catalog.entityPage.cd.title',
+    title: 'Entrega contínua',
     mountPoint: 'entity.page.cd',
   },
   '/kubernetes': {
     title: 'Kubernetes',
-    titleKey: 'catalog.entityPage.kubernetes.title',
     mountPoint: 'entity.page.kubernetes',
   },
   '/image-registry': {
-    title: 'Image Registry',
-    titleKey: 'catalog.entityPage.imageRegistry.title',
+    title: 'Registro de imagens',
     mountPoint: 'entity.page.image-registry',
   },
   '/monitoring': {
-    title: 'Monitoring',
-    titleKey: 'catalog.entityPage.monitoring.title',
+    title: 'Monitoramento',
     mountPoint: 'entity.page.monitoring',
   },
   '/lighthouse': {
     title: 'Lighthouse',
-    titleKey: 'catalog.entityPage.lighthouse.title',
     mountPoint: 'entity.page.lighthouse',
   },
   '/api': {
-    title: 'Api',
-    titleKey: 'catalog.entityPage.api.title',
+    title: 'APIs',
     mountPoint: 'entity.page.api',
   },
   '/dependencies': {
-    title: 'Dependencies',
-    titleKey: 'catalog.entityPage.dependencies.title',
+    title: 'Dependências',
     mountPoint: 'entity.page.dependencies',
   },
   '/docs': {
-    title: 'Docs',
-    titleKey: 'catalog.entityPage.docs.title',
+    title: 'Documentação',
     mountPoint: 'entity.page.docs',
   },
   '/definition': {
-    title: 'Definition',
-    titleKey: 'catalog.entityPage.definition.title',
+    title: 'Definição',
     mountPoint: 'entity.page.definition',
   },
   '/system': {
-    title: 'Diagram',
-    titleKey: 'catalog.entityPage.diagram.title',
+    title: 'Diagrama',
     mountPoint: 'entity.page.diagram',
   },
 };

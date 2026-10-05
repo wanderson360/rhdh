@@ -12,12 +12,10 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import buildMetadata from '../../build-metadata.json';
-import { useTranslation } from '../../hooks/useTranslation';
 import { BuildInfo } from '../../types/types';
 
 export const InfoCard = () => {
   const config = useApi(configApiRef);
-  const { t } = useTranslation();
   const buildInfo: BuildInfo | undefined = config.getOptional('buildInfo');
 
   const [showBuildInformation, setShowBuildInformation] = useState<boolean>(
@@ -38,35 +36,23 @@ export const InfoCard = () => {
     }
   };
 
-  const getTitle = () => {
-    const defaultTitle = buildInfo?.title ?? buildMetadata?.title;
-
-    // If titleKey is provided, use translation
-    if (buildInfo?.titleKey) {
-      return t(buildInfo.titleKey as any, {
-        defaultValue: defaultTitle,
-      });
-    }
-    // If no title but titleKey in metadata, use that translation
-    if (!buildInfo?.title && buildMetadata?.titleKey) {
-      return t(buildMetadata.titleKey as any, {
-        defaultValue: buildMetadata?.title,
-      });
-    }
-
-    // Fall back to title or default
-    return defaultTitle;
-  };
-
-  const title = getTitle();
+  const title = buildInfo?.title ?? 'Metadados do RHDH';
 
   let clipboardText = title;
-  const buildDetails = Object.entries(
+  const buildInfoLabels: Record<string, string> = {
+    'RHDH Version': 'Versão do RHDH',
+    'Backstage Version': 'Versão do Backstage',
+    'Last Commit': 'Último commit',
+  };
+  const buildInfoEntries = Object.entries(
     buildInfo?.full === false || // make it backward compatible with previous `full` config option
       buildInfo?.overrideBuildInfo === false
       ? { ...buildInfo?.card, ...buildMetadata?.card }
       : (buildInfo?.card ?? buildMetadata?.card),
-  ).map(([key, value]) => `${key}: ${value}`);
+  );
+  const buildDetails = buildInfoEntries.map(
+    ([key, value]) => `${buildInfoLabels[key] ?? key}: ${value}`,
+  );
   if (buildDetails?.length) {
     clipboardText += '\n\n';
     buildDetails.forEach(text => {
@@ -78,10 +64,9 @@ export const InfoCard = () => {
     if (buildInfo?.card) {
       return buildDetails.slice(0, 2);
     }
-    return buildDetails.filter(
-      text =>
-        text.startsWith('RHDH Version') || text.startsWith('Backstage Version'),
-    );
+    return buildInfoEntries
+      .filter(([key]) => key === 'RHDH Version' || key === 'Backstage Version')
+      .map(([key, value]) => `${buildInfoLabels[key] ?? key}: ${value}`);
   };
 
   const filteredCards = showBuildInformation ? buildDetails : filteredContent();
@@ -127,14 +112,14 @@ export const InfoCard = () => {
           >
             <CopyTextButton
               text={clipboardText}
-              tooltipText={t('app.userSettings.infoCard.metadataCopied')}
-              arial-label={t('app.userSettings.infoCard.copyMetadata')}
+              tooltipText="Metadados copiados"
+              arial-label="Copiar metadados"
             />
             <IconButton
               title={
                 showBuildInformation
-                  ? t('app.userSettings.infoCard.showLess')
-                  : t('app.userSettings.infoCard.showMore')
+                  ? 'Mostrar menos informações'
+                  : 'Mostrar mais informações'
               }
               onClick={toggleBuildInformation}
               style={{ width: 48 }}

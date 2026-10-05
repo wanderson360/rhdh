@@ -6,7 +6,6 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { makeStyles } from 'tss-react/mui';
 
 import { useAppBarThemedConfig } from '../../hooks/useThemedConfig';
-import { useTranslation } from '../../hooks/useTranslation';
 import { LogoFull } from './LogoFull';
 import { LogoIcon } from './LogoIcon';
 
@@ -38,7 +37,6 @@ export const SidebarLogo = () => {
   const { classes } = useStyles();
   const { isOpen } = useSidebarOpenState();
 
-  const { t } = useTranslation();
   const configApi = useApi(configApiRef);
 
   const logoFullBase64URI = useAppBarThemedConfig('app.branding.fullLogo');
@@ -51,20 +49,20 @@ export const SidebarLogo = () => {
 
   return (
     <div className={classes.sidebarLogo}>
-      <Link to="/" underline="none" aria-label={t('sidebar.home')}>
+      <Link to="/" underline="none" aria-label="Início">
         {isOpen ? (
           <LogoRender
             base64Logo={logoFullBase64URI}
             DefaultLogo={LogoFull}
             width={fullLogoWidth ?? 170}
-            altText={t('sidebar.homeLogo')}
+            altText="Logo da página inicial"
           />
         ) : (
           <LogoRender
             base64Logo={logoIconBase64URI}
             DefaultLogo={LogoIcon}
             width={28}
-            altText={t('sidebar.homeLogo')}
+            altText="Logo da página inicial"
           />
         )}
       </Link>

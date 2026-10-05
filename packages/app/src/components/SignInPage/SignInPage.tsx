@@ -19,31 +19,17 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { auth0AuthApiRef, oidcAuthApiRef, samlAuthApiRef } from '../../api';
-import { useTranslation } from '../../hooks/useTranslation';
 
 const DEFAULT_PROVIDER = 'github';
 
-/**
- * Creates provider configurations with translated strings
- *
- * t - Translation function.
- * Map of provider configurations.
- *
- * Key:
- * string - Provider name.
- *
- * Value:
- * SignInProviderConfig - Local sign-in provider configuration.
- * string - Proxy sign-in provider configuration.
- *  */
-const createProviders = (t: (key: string, params?: any) => string) =>
+const createProviders = () =>
   new Map<string, SignInProviderConfig | string>([
     [
       'auth0',
       {
         id: 'auth0-auth-provider',
-        title: t('signIn.providers.auth0.title'),
-        message: t('signIn.providers.auth0.message'),
+        title: 'Auth0',
+        message: 'Entre com sua conta Auth0.',
         apiRef: auth0AuthApiRef,
       },
     ],
@@ -51,8 +37,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'atlassian',
       {
         id: 'atlassian-auth-provider',
-        title: t('signIn.providers.atlassian.title'),
-        message: t('signIn.providers.atlassian.message'),
+        title: 'Atlassian',
+        message: 'Entre com sua conta Atlassian.',
         apiRef: atlassianAuthApiRef,
       },
     ],
@@ -60,8 +46,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'microsoft',
       {
         id: 'microsoft-auth-provider',
-        title: t('signIn.providers.microsoft.title'),
-        message: t('signIn.providers.microsoft.message'),
+        title: 'Microsoft',
+        message: 'Entre com sua conta Microsoft.',
         apiRef: microsoftAuthApiRef,
       },
     ],
@@ -70,8 +56,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'bitbucket',
       {
         id: 'bitbucket-auth-provider',
-        title: t('signIn.providers.bitbucket.title'),
-        message: t('signIn.providers.bitbucket.message'),
+        title: 'Bitbucket',
+        message: 'Entre com sua conta Bitbucket.',
         apiRef: bitbucketAuthApiRef,
       },
     ],
@@ -79,8 +65,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'bitbucketServer',
       {
         id: 'bitbucket-server-auth-provider',
-        title: t('signIn.providers.bitbucketServer.title'),
-        message: t('signIn.providers.bitbucketServer.message'),
+        title: 'Bitbucket Server',
+        message: 'Entre com sua conta Bitbucket Server.',
         apiRef: bitbucketServerAuthApiRef,
       },
     ],
@@ -89,8 +75,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'github',
       {
         id: 'github-auth-provider',
-        title: t('signIn.providers.github.title'),
-        message: t('signIn.providers.github.message'),
+        title: 'GitHub',
+        message: 'Entre com sua conta GitHub.',
         apiRef: githubAuthApiRef,
       },
     ],
@@ -98,8 +84,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'gitlab',
       {
         id: 'gitlab-auth-provider',
-        title: t('signIn.providers.gitlab.title'),
-        message: t('signIn.providers.gitlab.message'),
+        title: 'GitLab',
+        message: 'Entre com sua conta GitLab.',
         apiRef: gitlabAuthApiRef,
       },
     ],
@@ -107,8 +93,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'google',
       {
         id: 'google-auth-provider',
-        title: t('signIn.providers.google.title'),
-        message: t('signIn.providers.google.message'),
+        title: 'Google',
+        message: 'Entre com sua conta Google.',
         apiRef: googleAuthApiRef,
       },
     ],
@@ -117,8 +103,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'oidc',
       {
         id: 'oidc-auth-provider',
-        title: t('signIn.providers.oidc.title'),
-        message: t('signIn.providers.oidc.message'),
+        title: 'OIDC',
+        message: 'Entre com seu provedor de identidade OIDC.',
         apiRef: oidcAuthApiRef,
       },
     ],
@@ -126,8 +112,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'okta',
       {
         id: 'okta-auth-provider',
-        title: t('signIn.providers.okta.title'),
-        message: t('signIn.providers.okta.message'),
+        title: 'Okta',
+        message: 'Entre com sua conta Okta.',
         apiRef: oktaAuthApiRef,
       },
     ],
@@ -136,8 +122,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'onelogin',
       {
         id: 'onelogin-auth-provider',
-        title: t('signIn.providers.onelogin.title'),
-        message: t('signIn.providers.onelogin.message'),
+        title: 'OneLogin',
+        message: 'Entre com sua conta OneLogin.',
         apiRef: oneloginAuthApiRef,
       },
     ],
@@ -145,8 +131,8 @@ const createProviders = (t: (key: string, params?: any) => string) =>
       'saml',
       {
         id: 'saml-auth-provider',
-        title: t('signIn.providers.saml.title'),
-        message: t('signIn.providers.saml.message'),
+        title: 'SAML',
+        message: 'Entre com seu provedor de identidade SAML.',
         apiRef: samlAuthApiRef,
       },
     ],
@@ -154,7 +140,6 @@ const createProviders = (t: (key: string, params?: any) => string) =>
 
 export function SignInPage(props: SignInPageProps): React.JSX.Element {
   const configApi = useApi(configApiRef);
-  const { t } = useTranslation();
   const isDevEnv = configApi.getString('auth.environment') === 'development';
 
   const signInPageConfig = configApi.getOptional<string | string[]>(
@@ -165,7 +150,7 @@ export function SignInPage(props: SignInPageProps): React.JSX.Element {
     ? configValue
     : [configValue];
 
-  const providers = createProviders(t);
+  const providers = createProviders();
 
   const providerConfigs = providerNames
     .map(name => providers.get(name))
@@ -193,7 +178,7 @@ export function SignInPage(props: SignInPageProps): React.JSX.Element {
   return (
     <CCSignInPage
       {...props}
-      title={t('signIn.page.title')}
+      title="Entrar"
       align="center"
       providers={providerList}
     />

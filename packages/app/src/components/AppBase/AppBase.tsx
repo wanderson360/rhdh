@@ -7,14 +7,7 @@ import {
   AutoLogout,
   OAuthRequestDialog,
 } from '@backstage/core-components';
-import { ApiExplorerPage } from '@backstage/plugin-api-docs';
-import {
-  CatalogEntityPage,
-  CatalogIndexPage,
-  CatalogTable,
-  CatalogTableColumnsFunc,
-  CatalogTableRow,
-} from '@backstage/plugin-catalog';
+import { CatalogEntityPage } from '@backstage/plugin-catalog';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { CatalogImportPage } from '@backstage/plugin-catalog-import';
@@ -22,13 +15,13 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { ScaffolderPage } from '@backstage/plugin-scaffolder';
 import { ScaffolderFieldExtensions } from '@backstage/plugin-scaffolder-react';
 import { SearchPage as BackstageSearchPage } from '@backstage/plugin-search';
-import { UserSettingsPage } from '@backstage/plugin-user-settings';
 
 import DynamicRootContext from '@red-hat-developer-hub/plugin-utils';
 
 import getDynamicRootConfig from '../../utils/dynamicUI/getDynamicRootConfig';
+import { ApiExplorerPagePT } from '../api-docs/ApiExplorerPagePT';
+import { CatalogPagePT } from '../catalog/CatalogPagePT';
 import { entityPage } from '../catalog/EntityPage';
-import { CustomCatalogFilters } from '../catalog/filters/CustomCatalogFilters';
 import { LearningPaths } from '../learningPaths/LearningPathsPage';
 import { Root } from '../Root';
 import { ApplicationDrawer } from '../Root/ApplicationDrawer';
@@ -36,7 +29,7 @@ import { ApplicationListener } from '../Root/ApplicationListener';
 import { ApplicationProvider } from '../Root/ApplicationProvider';
 import ConfigUpdater from '../Root/ConfigUpdater';
 import { SearchPage } from '../search/SearchPage';
-import { settingsPage } from '../UserSettings/SettingsPages';
+import { SettingsPagePT } from '../UserSettings/SettingsPagePT';
 
 const AppBase = () => {
   const {
@@ -48,37 +41,6 @@ const AppBase = () => {
     scaffolderFieldExtensions,
   } = useContext(DynamicRootContext);
 
-  const myCustomColumnsFunc: CatalogTableColumnsFunc = entityListContext => [
-    ...CatalogTable.defaultColumnsFunc(entityListContext),
-    {
-      title: 'Created At',
-      customSort: (a: CatalogTableRow, b: CatalogTableRow): any => {
-        const timestampA =
-          a.entity.metadata.annotations?.['backstage.io/createdAt'];
-        const timestampB =
-          b.entity.metadata.annotations?.['backstage.io/createdAt'];
-
-        const dateA =
-          timestampA && timestampA !== ''
-            ? new Date(timestampA).toISOString()
-            : '';
-        const dateB =
-          timestampB && timestampB !== ''
-            ? new Date(timestampB).toISOString()
-            : '';
-
-        return dateA.localeCompare(dateB);
-      },
-      render: (data: CatalogTableRow) => {
-        const date =
-          data.entity.metadata.annotations?.['backstage.io/createdAt'];
-        return !isNaN(new Date(date || '') as any)
-          ? data.entity.metadata.annotations?.['backstage.io/createdAt']
-          : '';
-      },
-    },
-  ];
-
   return (
     <AppProvider>
       <AlertDisplay />
@@ -89,16 +51,7 @@ const AppBase = () => {
           <ApplicationListener />
           <Root>
             <FlatRoutes>
-              <Route
-                path="/catalog"
-                element={
-                  <CatalogIndexPage
-                    pagination
-                    columns={myCustomColumnsFunc}
-                    filters={<CustomCatalogFilters />}
-                  />
-                }
-              />
+              <Route path="/catalog" element={<CatalogPagePT />} />
               <Route
                 path="/catalog/:namespace/:kind/:name"
                 element={<CatalogEntityPage />}
@@ -115,7 +68,7 @@ const AppBase = () => {
                 </ScaffolderFieldExtensions>
                 scaffolderFieldExtensions
               </Route>
-              <Route path="/api-docs" element={<ApiExplorerPage />} />
+              <Route path="/api-docs" element={<ApiExplorerPagePT />} />
 
               <Route
                 path="/catalog-import"
@@ -128,9 +81,10 @@ const AppBase = () => {
               <Route path="/search" element={<BackstageSearchPage />}>
                 <SearchPage />
               </Route>
-              <Route path="/settings" element={<UserSettingsPage />}>
-                {settingsPage(providerSettings)}
-              </Route>
+              <Route
+                path="/settings"
+                element={<SettingsPagePT providerSettings={providerSettings} />}
+              />
               <Route path="/catalog-graph" element={<CatalogGraphPage />} />
               <Route path="/learning-paths" element={<LearningPaths />} />
               {dynamicRoutes.map(
